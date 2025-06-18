@@ -1,144 +1,102 @@
 "use client";
 
-export default function IconPreview({ imageData }) {
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-  };
+import { useEffect, useState } from "react";
+import Card from "../ui/Card";
 
-  const getQualityStatus = () => {
-    if (imageData.width >= 1024) {
-      return {
-        status: "excellent",
-        color: "text-green-600 dark:text-green-400",
-        text: "Excellent Quality",
-      };
-    } else if (imageData.width >= 512) {
-      return {
-        status: "good",
-        color: "text-amber-600 dark:text-amber-400",
-        text: "Good Quality",
-      };
-    } else {
-      return {
-        status: "poor",
-        color: "text-red-600 dark:text-red-400",
-        text: "Poor Quality",
+export default function IconPreview({ imageData }) {
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const [quality, setQuality] = useState("good");
+
+  useEffect(() => {
+    if (imageData && imageData.preview) {
+      const img = new Image();
+      img.src = imageData.preview;
+      img.onload = () => {
+        setDimensions({ width: img.width, height: img.height });
+
+        if (img.width < 512 || img.height < 512) {
+          setQuality("poor");
+        } else if (img.width < 1024 || img.height < 1024) {
+          setQuality("average");
+        } else {
+          setQuality("good");
+        }
       };
     }
+  }, [imageData]);
+
+  if (!imageData) return null;
+
+  const qualityStyles = {
+    good: "text-green-500",
+    average: "text-yellow-500",
+    poor: "text-red-500",
   };
 
-  const quality = getQualityStatus();
+  const qualityText = {
+    good: "Excellent",
+    average: "Average",
+    poor: "Poor",
+  };
+
+  const qualityDescription = {
+    good: "Perfect for high-resolution icons.",
+    average: "Good, but 1024x1024px is recommended for best results.",
+    poor: "Will be blurry at larger sizes. 512x512px minimum recommended.",
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
-          Image Preview
-        </h3>
-        <p className="text-slate-600 dark:text-slate-300">
-          Your uploaded icon is ready for processing
-        </p>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-8 items-start">
-        {/* Image Preview */}
-        <div className="flex-shrink-0 mx-auto md:mx-0">
-          <div className="relative">
+    <Card variant="default" className="p-6">
+      <h3 className="text-xl font-bold text-slate-900 dark:text-white text-center mb-6">
+        Image Preview
+      </h3>
+      <div className="flex flex-col md:flex-row items-center gap-8">
+        <div className="flex-shrink-0">
+          <div className="w-48 h-48 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center border-2 border-dashed border-slate-300 dark:border-slate-600">
             <img
-              src={imageData.dataUrl}
+              src={imageData.preview}
               alt="App icon preview"
-              className="w-32 h-32 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700"
+              className="w-full h-full object-contain rounded-2xl"
             />
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
           </div>
         </div>
-
-        {/* Image Details */}
-        <div className="flex-1 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* File Info */}
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4">
-              <h4 className="font-semibold text-slate-900 dark:text-white mb-2">
-                File Details
-              </h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-slate-600 dark:text-slate-400">
-                    Name:
-                  </span>
-                  <span className="text-slate-900 dark:text-white font-medium truncate ml-2">
-                    {imageData.name}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600 dark:text-slate-400">
-                    Size:
-                  </span>
-                  <span className="text-slate-900 dark:text-white font-medium">
-                    {formatFileSize(imageData.size)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600 dark:text-slate-400">
-                    Dimensions:
-                  </span>
-                  <span className="text-slate-900 dark:text-white font-medium">
-                    {imageData.width} × {imageData.height}px
-                  </span>
-                </div>
-              </div>
+        <div className="flex-grow space-y-4">
+          <div>
+            <h4 className="font-semibold text-slate-700 dark:text-slate-300">
+              File Details
+            </h4>
+            <p className="text-slate-500 dark:text-slate-400 truncate">
+              Name: {imageData.name}
+            </p>
+            <p className="text-slate-500 dark:text-slate-400">
+              Size: {(imageData.size / 1024).toFixed(2)} KB
+            </p>
+            <p className="text-slate-500 dark:text-slate-400">
+              Dimensions: {dimensions.width} x {dimensions.height} px
+            </p>
+          </div>
+          <div>
+            <h4 className="font-semibold text-slate-700 dark:text-slate-300">
+              Quality Status
+            </h4>
+            <div className="flex items-center gap-2">
+              <div
+                className={`w-2.5 h-2.5 rounded-full ${
+                  quality === "good"
+                    ? "bg-green-500"
+                    : quality === "average"
+                    ? "bg-yellow-500"
+                    : "bg-red-500"
+                }`}
+              ></div>
+              <p className={qualityStyles[quality]}>{qualityText[quality]}</p>
             </div>
-
-            {/* Quality Status */}
-            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4">
-              <h4 className="font-semibold text-slate-900 dark:text-white mb-2">
-                Quality Status
-              </h4>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <div
-                    className={`w-2 h-2 rounded-full ${
-                      quality.status === "excellent"
-                        ? "bg-green-500"
-                        : quality.status === "good"
-                        ? "bg-amber-500"
-                        : "bg-red-500"
-                    }`}
-                  ></div>
-                  <span className={`text-sm font-medium ${quality.color}`}>
-                    {quality.text}
-                  </span>
-                </div>
-                <div className="text-xs text-slate-600 dark:text-slate-400">
-                  {imageData.width >= 1024
-                    ? "Perfect for all icon sizes"
-                    : imageData.width >= 512
-                    ? "May lose quality at larger sizes"
-                    : "Will be blurry at larger sizes"}
-                </div>
-              </div>
-            </div>
+            <p className="text-slate-500 dark:text-slate-400 text-sm">
+              {qualityDescription[quality]}
+            </p>
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
