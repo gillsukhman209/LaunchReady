@@ -3,6 +3,7 @@
 import { useState } from "react";
 import ScreenshotUploader from "./mockup-generator/ScreenshotUploader";
 import MockupPreview from "./mockup-generator/MockupPreview";
+import DeviceSelector from "./mockup-generator/DeviceSelector";
 import Button from "./ui/Button";
 import { generateMultipleMockups } from "../lib/mockupUtils";
 import { downloadMockupsAsZip } from "../lib/zipUtils";
@@ -10,6 +11,7 @@ import { downloadMockupsAsZip } from "../lib/zipUtils";
 export default function MockupGenerator({ onMockupsGenerated }) {
   const [uploadedScreenshots, setUploadedScreenshots] = useState([]);
   const [generatedMockups, setGeneratedMockups] = useState([]);
+  const [selectedDevice, setSelectedDevice] = useState("iphone-15-pro");
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -17,6 +19,13 @@ export default function MockupGenerator({ onMockupsGenerated }) {
   const handleScreenshotsUpload = (screenshots) => {
     setUploadedScreenshots(screenshots);
     // Clear previous mockups when new screenshots are uploaded
+    setGeneratedMockups([]);
+    setError(null);
+  };
+
+  const handleDeviceChange = (deviceType) => {
+    setSelectedDevice(deviceType);
+    // Clear previous mockups when device changes
     setGeneratedMockups([]);
     setError(null);
   };
@@ -41,7 +50,11 @@ export default function MockupGenerator({ onMockupsGenerated }) {
         files.map((f) => f.name)
       );
 
-      const mockups = await generateMultipleMockups(files, setProgress);
+      const mockups = await generateMultipleMockups(
+        files,
+        setProgress,
+        selectedDevice
+      );
       console.log("✨ Mockups generated successfully:", mockups.length);
 
       setGeneratedMockups(mockups);
@@ -75,6 +88,12 @@ export default function MockupGenerator({ onMockupsGenerated }) {
 
   return (
     <div className="space-y-8">
+      {/* Device Selector */}
+      <DeviceSelector
+        selectedDevice={selectedDevice}
+        onDeviceChange={handleDeviceChange}
+      />
+
       {/* Upload Section */}
       <ScreenshotUploader
         onScreenshotsUpload={handleScreenshotsUpload}
