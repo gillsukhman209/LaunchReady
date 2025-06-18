@@ -4,6 +4,7 @@ import { useState } from "react";
 import ScreenshotUploader from "./mockup-generator/ScreenshotUploader";
 import MockupPreview from "./mockup-generator/MockupPreview";
 import DeviceSelector from "./mockup-generator/DeviceSelector";
+import ColorSelector from "./mockup-generator/ColorSelector";
 import Button from "./ui/Button";
 import { generateMultipleMockups } from "../lib/mockupUtils";
 import { downloadMockupsAsZip } from "../lib/zipUtils";
@@ -12,6 +13,7 @@ export default function MockupGenerator({ onMockupsGenerated }) {
   const [uploadedScreenshots, setUploadedScreenshots] = useState([]);
   const [generatedMockups, setGeneratedMockups] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState("iphone-15-pro");
+  const [selectedColor, setSelectedColor] = useState("natural-titanium");
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -26,6 +28,13 @@ export default function MockupGenerator({ onMockupsGenerated }) {
   const handleDeviceChange = (deviceType) => {
     setSelectedDevice(deviceType);
     // Clear previous mockups when device changes
+    setGeneratedMockups([]);
+    setError(null);
+  };
+
+  const handleColorChange = (colorType) => {
+    setSelectedColor(colorType);
+    // Clear previous mockups when color changes
     setGeneratedMockups([]);
     setError(null);
   };
@@ -53,7 +62,8 @@ export default function MockupGenerator({ onMockupsGenerated }) {
       const mockups = await generateMultipleMockups(
         files,
         setProgress,
-        selectedDevice
+        selectedDevice,
+        selectedColor
       );
       console.log("✨ Mockups generated successfully:", mockups.length);
 
@@ -92,6 +102,12 @@ export default function MockupGenerator({ onMockupsGenerated }) {
       <DeviceSelector
         selectedDevice={selectedDevice}
         onDeviceChange={handleDeviceChange}
+      />
+
+      {/* Color Selector */}
+      <ColorSelector
+        selectedColor={selectedColor}
+        onColorChange={handleColorChange}
       />
 
       {/* Upload Section */}
