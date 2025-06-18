@@ -108,22 +108,22 @@ export default function ScreenshotUploader({
 
       {/* Uploaded Files Preview */}
       {uploadedFiles.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {uploadedFiles.map((file) => (
             <div key={file.id} className="relative group">
-              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+              <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
                 <div className="relative">
                   <img
                     src={file.preview}
                     alt={file.name}
-                    className="w-full h-40 object-cover rounded-lg"
+                    className="w-full h-80 object-contain rounded-lg bg-gray-50 dark:bg-gray-700"
                   />
                   <button
                     onClick={() => removeFile(file.id)}
-                    className="absolute -top-2 -right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors duration-200 opacity-0 group-hover:opacity-100"
+                    className="absolute -top-3 -right-3 w-10 h-10 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors duration-200 opacity-0 group-hover:opacity-100 shadow-lg"
                   >
                     <svg
-                      className="w-4 h-4"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -137,11 +137,11 @@ export default function ScreenshotUploader({
                     </svg>
                   </button>
                 </div>
-                <div className="mt-3">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                <div className="mt-4">
+                  <p className="text-base font-medium text-gray-900 dark:text-white truncate">
                     {file.name}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {(file.size / (1024 * 1024)).toFixed(1)} MB
                   </p>
                 </div>

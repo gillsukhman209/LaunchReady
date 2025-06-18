@@ -10,7 +10,7 @@ export default function DeviceSelector({ selectedDevice, onDeviceChange }) {
       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
         Choose Device
       </label>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {devices.map(([deviceKey, deviceConfig]) => (
           <button
             key={deviceKey}
@@ -23,13 +23,15 @@ export default function DeviceSelector({ selectedDevice, onDeviceChange }) {
           >
             <div className="flex items-center space-x-3">
               <div
-                className={`w-8 h-12 rounded-lg border-2 ${
+                className={`${
+                  deviceConfig.type === "tablet" ? "w-12 h-8" : "w-8 h-12"
+                } rounded-lg border-2 ${
                   selectedDevice === deviceKey
                     ? "border-blue-500 bg-blue-100 dark:bg-blue-800"
                     : "border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700"
                 }`}
               >
-                {/* Mini iPhone icon */}
+                {/* Mini device icon */}
                 <div
                   className={`w-full h-full rounded-md ${
                     selectedDevice === deviceKey
@@ -38,16 +40,23 @@ export default function DeviceSelector({ selectedDevice, onDeviceChange }) {
                   }`}
                   style={{
                     aspectRatio:
-                      deviceKey === "iphone-16-pro-max" ? "340/740" : "300/650",
+                      deviceConfig.type === "tablet"
+                        ? `${deviceConfig.width}/${deviceConfig.height}`
+                        : deviceKey === "iphone-16-pro-max"
+                        ? "340/740"
+                        : "300/650",
                   }}
                 >
-                  <div
-                    className={`w-3 h-1 mx-auto mt-1 rounded-full ${
-                      selectedDevice === deviceKey
-                        ? "bg-blue-200"
-                        : "bg-gray-200 dark:bg-gray-400"
-                    }`}
-                  ></div>
+                  {/* Only show notch for phones */}
+                  {deviceConfig.type === "phone" && (
+                    <div
+                      className={`w-3 h-1 mx-auto mt-1 rounded-full ${
+                        selectedDevice === deviceKey
+                          ? "bg-blue-200"
+                          : "bg-gray-200 dark:bg-gray-400"
+                      }`}
+                    ></div>
+                  )}
                 </div>
               </div>
               <div>
