@@ -7,6 +7,7 @@ import Form from "../components/Form";
 import OutputBox from "../components/OutputBox";
 import Loader from "../components/Loader";
 import LogoGenerator from "../components/LogoGenerator";
+import MockupGenerator from "../components/MockupGenerator";
 import IconUploader from "../components/icon-generator/IconUploader";
 import IconPreview from "../components/icon-generator/IconPreview";
 import PlatformSelector from "../components/icon-generator/PlatformSelector";
@@ -17,7 +18,7 @@ import Button from "../components/ui/Button";
 
 export default function Home() {
   // Overall workflow state
-  const [workflowStep, setWorkflowStep] = useState("AWAITING_INPUT"); // AWAITING_INPUT, METADATA_READY, LOGO_READY, ICONS_READY
+  const [workflowStep, setWorkflowStep] = useState("AWAITING_INPUT"); // AWAITING_INPUT, METADATA_READY, LOGO_READY, MOCKUPS_READY, ICONS_READY
   const [logoOption, setLogoOption] = useState(null); // 'generate' or 'upload'
   const [error, setError] = useState(null);
 
@@ -26,6 +27,7 @@ export default function Home() {
   const [metadataResults, setMetadataResults] = useState(null);
   const [generatedLogoData, setGeneratedLogoData] = useState(null);
   const [uploadedImage, setUploadedImage] = useState(null);
+  const [generatedMockups, setGeneratedMockups] = useState([]);
   const [selectedPlatforms, setSelectedPlatforms] = useState([]);
   const [generatedFilename, setGeneratedFilename] = useState("");
 
@@ -94,6 +96,18 @@ export default function Home() {
     setWorkflowStep("LOGO_READY");
   };
 
+  const handleMockupsGenerated = (mockups) => {
+    console.log(
+      "📱 Mockups generated callback received:",
+      mockups.length,
+      "mockups"
+    );
+    console.log("🔄 Current workflow step:", workflowStep);
+    setGeneratedMockups(mockups);
+    setWorkflowStep("MOCKUPS_READY");
+    console.log("✅ Workflow step updated to MOCKUPS_READY");
+  };
+
   const handleIconGeneration = async () => {
     setIsGeneratingIcons(true);
     setError(null);
@@ -146,6 +160,7 @@ export default function Home() {
     setMetadataResults(null);
     setGeneratedLogoData(null);
     setUploadedImage(null);
+    setGeneratedMockups([]);
     setSelectedPlatforms([]);
     setGeneratedFilename("");
   };
@@ -179,7 +194,10 @@ export default function Home() {
             />
           )}
 
-          {workflowStep === "METADATA_READY" && (
+          {(workflowStep === "METADATA_READY" ||
+            workflowStep === "MOCKUPS_READY" ||
+            workflowStep === "LOGO_READY" ||
+            workflowStep === "ICONS_READY") && (
             <div className="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -222,31 +240,53 @@ export default function Home() {
             </div>
           )}
 
-          {workflowStep === "LOGO_READY" && uploadedImage && (
+          {(workflowStep === "METADATA_READY" ||
+            workflowStep === "MOCKUPS_READY" ||
+            workflowStep === "LOGO_READY" ||
+            workflowStep === "ICONS_READY") && (
             <div className="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
               <div className="text-center mb-8">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  Step 3: Generate App Icons
+                  Step 3: Generate App Mockups
                 </h2>
                 <p className="text-gray-600 dark:text-gray-300">
-                  Select platforms to generate all required icon sizes.
+                  Upload app screenshots to create iPhone 15 Pro mockups.
                 </p>
               </div>
-              <div className="max-w-4xl mx-auto space-y-8">
-                <IconPreview imageData={uploadedImage} />
-                <PlatformSelector
-                  selectedPlatforms={selectedPlatforms}
-                  onPlatformChange={setSelectedPlatforms}
-                />
-                <GenerateButton
-                  canGenerate={selectedPlatforms.length > 0}
-                  isGenerating={isGeneratingIcons}
-                  onGenerate={handleIconGeneration}
-                  selectedCount={selectedPlatforms.length}
-                />
+              <div className="max-w-4xl mx-auto">
+                <MockupGenerator onMockupsGenerated={handleMockupsGenerated} />
               </div>
             </div>
           )}
+
+          {(workflowStep === "LOGO_READY" ||
+            workflowStep === "MOCKUPS_READY" ||
+            workflowStep === "ICONS_READY") &&
+            uploadedImage && (
+              <div className="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                    Step 4: Generate App Icons
+                  </h2>
+                  <p className="text-gray-600 dark:text-gray-300">
+                    Select platforms to generate all required icon sizes.
+                  </p>
+                </div>
+                <div className="max-w-4xl mx-auto space-y-8">
+                  <IconPreview imageData={uploadedImage} />
+                  <PlatformSelector
+                    selectedPlatforms={selectedPlatforms}
+                    onPlatformChange={setSelectedPlatforms}
+                  />
+                  <GenerateButton
+                    canGenerate={selectedPlatforms.length > 0}
+                    isGenerating={isGeneratingIcons}
+                    onGenerate={handleIconGeneration}
+                    selectedCount={selectedPlatforms.length}
+                  />
+                </div>
+              </div>
+            )}
 
           {workflowStep === "ICONS_READY" && (
             <div className="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
