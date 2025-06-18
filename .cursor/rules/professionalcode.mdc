@@ -1,0 +1,69 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 🔧 Project Engineering Rules (App Store Connect Helper)
+
+## 🧠 General Coding Principles
+- Write clean, readable **JavaScript** only (no TypeScript).
+- Follow **Next.js App Router structure** using `app/` directory.
+- Use **Tailwind CSS** for all styling; no external CSS or UI libraries unless asked.
+- Components must be **modular**, **reusable**, and easy to refactor.
+- Favor **server components** when possible, but use client components when interactivity is needed.
+- Keep **logic and UI separated** as much as possible (e.g. prompt logic in `lib/`, UI in `components/`).
+
+---
+
+## 🌍 SEO & Performance (HIGH PRIORITY)
+- Every page must have a proper `<title>` and `<meta name="description">` using `generateMetadata` from Next.js 13+.
+- Use semantic HTML: headings (`<h1>` → `<h3>`), sections, and accessible tags.
+- Avoid using `<div>` soup — structure content clearly for crawlers and screen readers.
+- Use Next.js `Image` component for all images with proper `alt` tags.
+- Use `robots` and `og:` tags if possible on landing page.
+- Keep bundles light; avoid unnecessary imports or libraries.
+
+---
+
+## 🧩 Component Best Practices
+- Each component should do **one thing well** (Single Responsibility Principle).
+- Keep components under 100 lines unless absolutely needed.
+- Split form fields, layout wrappers, and output boxes into their own components.
+- Use `props` for customization — no hardcoding unless temporary.
+- If a section might be reused (e.g., OutputBox), turn it into a component early.
+
+---
+
+## 🧪 Testing & Validation
+- Use `console.log()` temporarily for debugging, but remove all logs from final code.
+- Always test forms, error states, loading states before marking as done.
+- Validate all AI outputs before rendering to avoid layout breaking.
+
+---
+
+## 💄 Design & UX
+- Design should feel **futuristic, minimal, and premium**.
+- Use smooth transitions and `hover`, `focus`, and `active` states for all inputs and buttons.
+- Add skeleton loaders or spinners while awaiting AI responses.
+- Layout should be **centered, readable, and mobile-first**.
+
+---
+
+## 📦 File Structure
+
+app/
+├── page.jsx (main landing page)
+├── api/
+│    └── generate/route.js (handles OpenAI requests)
+components/
+├── Form.jsx
+├── OutputBox.jsx
+└── Loader.jsx
+lib/
+└── openai.js (prompt logic abstraction)
+styles/
+└── globals.css (Tailwind base if needed)
+# ✅ Summary
+Write maintainable, SEO-optimized code that’s clean, responsive, and future-proof — even in this MVP.
+
+
