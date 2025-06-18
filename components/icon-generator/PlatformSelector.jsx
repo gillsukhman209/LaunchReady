@@ -6,7 +6,6 @@ export default function PlatformSelector({
   selectedPlatforms,
   onPlatformChange,
 }) {
-  // For now, only iPhone - we'll add iPad and watchOS later
   const platforms = [
     {
       id: "iphone",
@@ -17,16 +16,8 @@ export default function PlatformSelector({
           <path d="M17 2H7c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM7 4h10v12H7V4z" />
         </svg>
       ),
-      sizes: [
-        "20×20",
-        "29×29",
-        "40×40",
-        "60×60",
-        "76×76",
-        "83.5×83.5",
-        "1024×1024",
-      ],
-      totalIcons: 14,
+      sizes: ["20×20", "29×29", "40×40", "60×60", "1024×1024"],
+      totalIcons: 9,
       comingSoon: false,
     },
     {
@@ -39,8 +30,8 @@ export default function PlatformSelector({
         </svg>
       ),
       sizes: ["20×20", "29×29", "40×40", "76×76", "83.5×83.5", "1024×1024"],
-      totalIcons: 12,
-      comingSoon: true,
+      totalIcons: 10,
+      comingSoon: false,
     },
     {
       id: "watchos",
@@ -61,9 +52,23 @@ export default function PlatformSelector({
         "86×86",
         "98×98",
         "108×108",
+        "1024×1024",
       ],
-      totalIcons: 18,
-      comingSoon: true,
+      totalIcons: 11,
+      comingSoon: false,
+    },
+    {
+      id: "macos",
+      name: "macOS",
+      description: "Mac app icons",
+      icon: (
+        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+      ),
+      sizes: ["16×16", "32×32", "128×128", "256×256", "512×512"],
+      totalIcons: 10,
+      comingSoon: false,
     },
   ];
 
@@ -81,7 +86,7 @@ export default function PlatformSelector({
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {platforms.map((platform) => {
           const isSelected = selectedPlatforms.includes(platform.id);
           const isDisabled = platform.comingSoon;

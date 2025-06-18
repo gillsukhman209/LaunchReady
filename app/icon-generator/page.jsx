@@ -55,7 +55,18 @@ export default function IconGenerator() {
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      a.download = `AppIcons-iPhone-${Date.now()}.zip`;
+
+      // Extract filename from response header if available
+      const contentDisposition = response.headers.get("content-disposition");
+      let filename = `AppIcons-${Date.now()}.zip`;
+      if (contentDisposition) {
+        const matches = contentDisposition.match(/filename="([^"]+)"/);
+        if (matches) {
+          filename = matches[1];
+        }
+      }
+
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -97,8 +108,8 @@ export default function IconGenerator() {
               App Icon Generator
             </h1>
             <p className="text-xl text-slate-600 dark:text-slate-300 font-medium max-w-2xl mx-auto leading-relaxed">
-              Upload your app icon and generate all required sizes for iOS
-              platforms in seconds
+              Upload your app icon and generate all required sizes for iPhone,
+              iPad, watchOS, and macOS in seconds
             </p>
             <div className="flex items-center justify-center gap-6 mt-8 text-sm text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
@@ -107,7 +118,7 @@ export default function IconGenerator() {
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
-                <span>All iOS Sizes</span>
+                <span>All Platform Sizes</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -130,7 +141,8 @@ export default function IconGenerator() {
                       Upload Your App Icon
                     </h2>
                     <p className="text-slate-600 dark:text-slate-300">
-                      Upload a PNG image (minimum 1024x1024px) to get started
+                      Upload a PNG image (minimum 512x512px recommended) to get
+                      started
                     </p>
                   </div>
                   <IconUploader onImageUpload={handleImageUpload} />
@@ -239,7 +251,8 @@ export default function IconGenerator() {
               </div>
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-              Generate all required app icon sizes for iOS platforms instantly
+              Generate all required app icon sizes for iPhone, iPad, watchOS,
+              and macOS instantly
             </p>
           </div>
         </footer>
