@@ -5,6 +5,8 @@ import ScreenshotUploader from "./mockup-generator/ScreenshotUploader";
 import MockupPreview from "./mockup-generator/MockupPreview";
 import DeviceSelector from "./mockup-generator/DeviceSelector";
 import ColorSelector from "./mockup-generator/ColorSelector";
+import QualityToggle from "./mockup-generator/QualityToggle";
+import FrameSelector from "./mockup-generator/FrameSelector";
 import Button from "./ui/Button";
 import { generateMultipleMockups } from "../lib/mockupUtils";
 import { downloadMockupsAsZip } from "../lib/zipUtils";
@@ -14,6 +16,8 @@ export default function MockupGenerator({ onMockupsGenerated }) {
   const [generatedMockups, setGeneratedMockups] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState("iphone-15-pro");
   const [selectedColor, setSelectedColor] = useState("natural-titanium");
+  const [qualityMode, setQualityMode] = useState("standard");
+  const [selectedFrames, setSelectedFrames] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -39,14 +43,35 @@ export default function MockupGenerator({ onMockupsGenerated }) {
     setError(null);
   };
 
+  const handleQualityChange = (quality) => {
+    setQualityMode(quality);
+    // Clear previous mockups when quality changes
+    setGeneratedMockups([]);
+    setError(null);
+  };
+
+  const handleFrameSelectionChange = (frames) => {
+    setSelectedFrames(frames);
+    // Clear previous mockups when frame selection changes
+    setGeneratedMockups([]);
+    setError(null);
+  };
+
   const handleGenerateMockups = async () => {
     if (uploadedScreenshots.length === 0) {
       console.log("❌ No screenshots uploaded");
       return;
     }
 
+    // Validate requirements for high-quality mode
+    if (qualityMode === "high-quality" && selectedFrames.length === 0) {
+      setError("Please select at least one frame for high-quality mockups.");
+      return;
+    }
+
     console.log("🚀 Starting mockup generation process...");
     console.log("📁 Screenshots to process:", uploadedScreenshots.length);
+    console.log("🎨 Quality mode:", qualityMode);
 
     setIsGenerating(true);
     setProgress(0);
@@ -59,14 +84,26 @@ export default function MockupGenerator({ onMockupsGenerated }) {
         files.map((f) => f.name)
       );
 
-      const mockups = await generateMultipleMockups(
-        files,
-        setProgress,
-        selectedDevice,
-        selectedColor
-      );
-      console.log("✨ Mockups generated successfully:", mockups.length);
+      let mockups;
 
+      if (qualityMode === "standard") {
+        // Use existing Canvas-based generation
+        mockups = await generateMultipleMockups(
+          files,
+          setProgress,
+          selectedDevice,
+          selectedColor
+        );
+      } else {
+        // TODO: Implement high-quality generation with PNG frames
+        // For now, show a placeholder message
+        setError(
+          "High-quality mockup generation coming soon! Please use Standard mode for now."
+        );
+        return;
+      }
+
+      console.log("✨ Mockups generated successfully:", mockups.length);
       setGeneratedMockups(mockups);
 
       // Notify parent component
@@ -98,17 +135,39 @@ export default function MockupGenerator({ onMockupsGenerated }) {
 
   return (
     <div className="space-y-8">
-      {/* Device Selector */}
-      <DeviceSelector
-        selectedDevice={selectedDevice}
-        onDeviceChange={handleDeviceChange}
+      {/* Quality Toggle */}
+      <QualityToggle
+        qualityMode={qualityMode}
+        onQualityChange={handleQualityChange}
       />
 
-      {/* Color Selector */}
-      <ColorSelector
-        selectedColor={selectedColor}
-        onColorChange={handleColorChange}
-      />
+      {/* Standard Quality Options */}
+      {qualityMode === "standard" && (
+        <div className="space-y-6">
+          {/* Device Selector */}
+          <DeviceSelector
+            selectedDevice={selectedDevice}
+            onDeviceChange={handleDeviceChange}
+          />
+
+          {/* Color Selector */}
+          <ColorSelector
+            selectedColor={selectedColor}
+            onColorChange={handleColorChange}
+          />
+        </div>
+      )}
+
+      {/* High Quality Options */}
+      {qualityMode === "high-quality" && (
+        <div className="space-y-6">
+          {/* Frame Selector */}
+          <FrameSelector
+            selectedFrames={selectedFrames}
+            onFrameSelectionChange={handleFrameSelectionChange}
+          />
+        </div>
+      )}
 
       {/* Upload Section */}
       <ScreenshotUploader
