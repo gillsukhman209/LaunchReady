@@ -16,23 +16,31 @@ export default function Home() {
     setError(null);
 
     try {
-      // TODO: Replace with actual API call in Phase 1
-      // Simulating API call with mock data for now
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          appName: formData.appName,
+          appDescription: formData.appDescription,
+        }),
+      });
 
-      const mockResults = {
-        appName: "TaskMaster Pro",
-        subtitle: "Organize & Boost Productivity",
-        category: "Productivity",
-        promotionalText:
-          "Transform your daily workflow with TaskMaster Pro - the ultimate productivity companion that helps you organize tasks, set priorities, and achieve your goals faster than ever before.",
-        description:
-          "TaskMaster Pro revolutionizes how you manage your daily tasks and boost productivity. With an intuitive interface and powerful features, this app helps you organize your workflow, set smart priorities, and track progress toward your goals. Whether you're a busy professional, student, or entrepreneur, TaskMaster Pro adapts to your unique needs with customizable task categories, deadline reminders, and progress analytics. Experience the perfect blend of simplicity and functionality that transforms overwhelming to-do lists into manageable, actionable plans. Join thousands of users who have already discovered the secret to effortless productivity and time management.",
-      };
+      const result = await response.json();
 
-      setResults(mockResults);
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to generate metadata");
+      }
+
+      if (result.success && result.data) {
+        setResults(result.data);
+      } else {
+        throw new Error("Invalid response format");
+      }
     } catch (err) {
-      setError("Failed to generate metadata. Please try again.");
+      console.error("Error:", err);
+      setError(err.message || "Failed to generate metadata. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +68,7 @@ export default function Home() {
                 Generating your optimized App Store metadata...
               </p>
               <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                This usually takes 10-30 seconds
+                This usually takes 5-15 seconds
               </p>
             </div>
           )}
