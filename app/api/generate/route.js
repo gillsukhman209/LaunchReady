@@ -37,8 +37,13 @@ export async function POST(request) {
 
     // Call OpenAI API
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: "gpt-4o",
       messages: [
+        {
+          role: "system",
+          content:
+            "You are an expert App Store optimization specialist. Always respond with valid JSON only, no markdown formatting or extra text.",
+        },
         {
           role: "user",
           content: prompt,
@@ -50,13 +55,28 @@ export async function POST(request) {
 
     // Parse response
     const aiResponse = completion.choices[0].message.content;
+    console.log("Raw AI Response:", aiResponse);
 
     // Try to parse JSON response
     let parsedResponse;
     try {
-      parsedResponse = JSON.parse(aiResponse);
+      // Clean the response - sometimes AI wraps JSON in markdown code blocks
+      let cleanedResponse = aiResponse.trim();
+      if (cleanedResponse.startsWith("```json")) {
+        cleanedResponse = cleanedResponse
+          .replace(/^```json\s*/, "")
+          .replace(/\s*```$/, "");
+      } else if (cleanedResponse.startsWith("```")) {
+        cleanedResponse = cleanedResponse
+          .replace(/^```\s*/, "")
+          .replace(/\s*```$/, "");
+      }
+
+      parsedResponse = JSON.parse(cleanedResponse);
     } catch (parseError) {
-      throw new Error("Invalid JSON response from AI");
+      console.error("JSON Parse Error:", parseError);
+      console.error("Raw response that failed to parse:", aiResponse);
+      throw new Error(`Invalid JSON response from AI: ${parseError.message}`);
     }
 
     // Validate the response structure and character limits
