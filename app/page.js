@@ -240,25 +240,6 @@ export default function Home() {
             </div>
           )}
 
-          {(workflowStep === "METADATA_READY" ||
-            workflowStep === "MOCKUPS_READY" ||
-            workflowStep === "LOGO_READY" ||
-            workflowStep === "ICONS_READY") && (
-            <div className="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                  Step 3: Generate App Mockups
-                </h2>
-                <p className="text-gray-600 dark:text-gray-300">
-                  Upload app screenshots to create iPhone 15 Pro mockups.
-                </p>
-              </div>
-              <div className="max-w-4xl mx-auto">
-                <MockupGenerator onMockupsGenerated={handleMockupsGenerated} />
-              </div>
-            </div>
-          )}
-
           {(workflowStep === "LOGO_READY" ||
             workflowStep === "MOCKUPS_READY" ||
             workflowStep === "ICONS_READY") &&
@@ -266,7 +247,7 @@ export default function Home() {
               <div className="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
                 <div className="text-center mb-8">
                   <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                    Step 4: Generate App Icons
+                    Step 3: Generate App Icons
                   </h2>
                   <p className="text-gray-600 dark:text-gray-300">
                     Select platforms to generate all required icon sizes.
@@ -287,6 +268,25 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+          {(workflowStep === "METADATA_READY" ||
+            workflowStep === "MOCKUPS_READY" ||
+            workflowStep === "LOGO_READY" ||
+            workflowStep === "ICONS_READY") && (
+            <div className="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  Step 4: Generate App Mockups
+                </h2>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Upload app screenshots to create device mockups.
+                </p>
+              </div>
+              <div className="max-w-4xl mx-auto">
+                <MockupGenerator onMockupsGenerated={handleMockupsGenerated} />
+              </div>
+            </div>
+          )}
 
           {workflowStep === "ICONS_READY" && (
             <div className="mt-12 pt-12 border-t border-gray-200 dark:border-gray-700">
