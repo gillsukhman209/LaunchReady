@@ -27,15 +27,15 @@ export default function Input({
         onBlur={() => setIsFocused(false)}
         maxLength={maxLength}
         className={`
-          w-full px-4 py-4 rounded-lg border bg-white dark:bg-gray-800
+          w-full px-4 rounded-lg border bg-white dark:bg-gray-800
           transition-all duration-200 ease-in-out
           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500
           hover:border-gray-400 dark:hover:border-gray-500
           text-gray-900 dark:text-white placeholder-transparent
           ${
             hasValue || isFocused
-              ? "border-gray-400 dark:border-gray-500"
-              : "border-gray-300 dark:border-gray-600"
+              ? "pt-6 pb-2 border-gray-400 dark:border-gray-500"
+              : "py-4 border-gray-300 dark:border-gray-600"
           }
         `}
         placeholder={placeholder}
@@ -46,10 +46,10 @@ export default function Input({
       {label && (
         <label
           className={`
-            absolute left-4 transition-all duration-200 ease-in-out pointer-events-none
+            absolute left-4 transition-all duration-200 ease-in-out pointer-events-none bg-white dark:bg-gray-800 px-1
             ${
               hasValue || isFocused
-                ? "top-2 text-xs text-blue-600 dark:text-blue-400"
+                ? "top-2 text-xs text-blue-600 dark:text-blue-400 z-10"
                 : "top-4 text-base text-gray-500 dark:text-gray-400"
             }
           `}

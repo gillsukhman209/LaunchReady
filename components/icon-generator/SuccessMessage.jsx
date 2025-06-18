@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function SuccessMessage({ onNewGeneration }) {
   return (
     <div className="text-center space-y-6 py-8">
@@ -40,7 +42,7 @@ export default function SuccessMessage({ onNewGeneration }) {
           </li>
           <li className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
-            All 9 required iPhone icon sizes
+            All required icon sizes for selected platforms
           </li>
           <li className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
@@ -54,30 +56,50 @@ export default function SuccessMessage({ onNewGeneration }) {
       </div>
 
       <div className="space-y-4">
-        <button
-          onClick={onNewGeneration}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <button
+            onClick={onNewGeneration}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-          Generate More Icons
-        </button>
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+              />
+            </svg>
+            Generate More Icons
+          </button>
+
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 10V3L4 14h7v7l9-11h-7"
+              />
+            </svg>
+            Generate App Store Metadata
+          </Link>
+        </div>
 
         <div className="text-sm text-slate-500 dark:text-slate-400">
-          <p>
-            Need icons for iPad or watchOS? Those platforms are coming soon!
-          </p>
+          <p>Icons generated for iPhone, iPad, watchOS, and macOS platforms</p>
         </div>
       </div>
     </div>
